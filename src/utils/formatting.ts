@@ -1,13 +1,14 @@
+export * from "./formatting";
 // Formatação de valores monetários
-export function formatCurrency(value: number, currency: string = "Kz"): string {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "AOA",
-  })
-    .format(value)
-    .replace("AOA", currency)
-    .trim();
-}
+//function formatCurrency(value: number, currency: string = "Kz"): string {
+ // return new Intl.NumberFormat("pt-BR", {
+   // style: "currency",
+   // currency: "AOA",
+  //})
+    //.format(value)
+    //.replace("AOA", currency)
+    //.trim();
+//}
 
 // Formatação de datas
 export function formatDate(date: string | Date): string {

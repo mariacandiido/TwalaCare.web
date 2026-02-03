@@ -1,3 +1,4 @@
+export * from "./constants";
 // Constantes de Categorias
 export const CATEGORIAS = [
   "Todos",

@@ -5,7 +5,7 @@ const menuItems = [
   { path: "/", label: "Início", icon: Home },
   { path: "/farmacias", label: "Farmácias", icon: Building2 },
   { path: "/farmacos", label: "Fármacos", icon: Pill },
-  { path: "/entrega", label: "Entrega", icon: Truck },
+  { path: "/deliveriesPage", label: "Entrega", icon: Truck },
   { path: "/receitas", label: "Receitas", icon: FileText },
   { path: "/sobre-nos", label: "Sobre Nós", icon: Info },
 ];

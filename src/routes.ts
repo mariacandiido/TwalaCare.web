@@ -2,10 +2,13 @@ import { createBrowserRouter } from "react-router-dom";
 import { Root } from "./components/Root";
 import { Home } from "./components/Home";
 import { Login } from "./components/Login";
+import { Register } from "./components/register";
 import { Farmacias } from "./components/Farmacias";
 import { Farmacos } from "./components/Farmacos";
+import { DeliveriesPage } from "./components/DeliveriesPage";
 import { SobreNos } from "./components/SobreNos";
 import { FAQ } from "./components/FAQ";
+import { NotificationsPage } from "./components/notificationsPage";
 import { Carrinho } from "./components/Carrinho";
 import { Checkout } from "./components/Checkout";
 
@@ -39,9 +42,12 @@ export const router = createBrowserRouter([
     children: [
       { index: true, Component: Home },
       { path: "login", Component: Login },
+      {path: "register", Component: Register },
       { path: "farmacias", Component: Farmacias },
       { path: "farmacos", Component: Farmacos },
+      {path: "deliveriesPage", Component: DeliveriesPage },
       { path: "sobre-nos", Component: SobreNos },
+      {path: "notificationsPage", Component: NotificationsPage },
       { path: "faq", Component: FAQ },
       { path: "carrinho", Component: Carrinho },
       { path: "checkout", Component: Checkout },

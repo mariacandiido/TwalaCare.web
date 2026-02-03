@@ -20,11 +20,14 @@ export function Header() {
 
           {/* Botões da direita */}
           <div className="flex items-center space-x-4">
-            {/* Notificações */}
-            <button className="relative p-2 text-gray-600 hover:text-green-600 transition">
+            {/* Notificações - LINK PRINCIPAL */}
+            <Link
+              to="/notificationsPage"
+              className="relative p-2 text-gray-600 hover:text-green-600 transition"
+            >
               <Bell className="w-6 h-6" />
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
+            </Link>
 
             {/* Carrinho */}
             <Link
