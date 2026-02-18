@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Search, Star, MapPin, Clock, Phone } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { FloatingChat } from "../components/FloatingChat";
+
 
 const provincias = ["Todas", "Luanda", "Benguela", "Huíla", "Huambo", "Cabinda"];
 
@@ -237,6 +239,8 @@ export function Farmacias() {
           </div>
         )}
       </div>
+       <FloatingChat />
     </div>
+
   );
 }

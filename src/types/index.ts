@@ -54,7 +54,7 @@ export interface Farmacia extends BaseUser {
   provincia: string;
   municipio: string;
   endereco: string;
-  horarioAbertuda: string;
+  horarioAbertura: string;
   horarioFechamento: string;
   avaliacao: number;
 }
@@ -134,7 +134,7 @@ export interface Entrega {
   clienteName: string;
   clientePhone: string;
   clienteAddress: string;
-  farmaciName: string;
+  farmaciaName: string;
   farmaciaAddress: string;
   status: DeliveryStatus;
   distance: string;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, type FormEvent } from "react";
 import {
   User,
   Mail,
@@ -7,20 +7,21 @@ import {
   Building2,
   Truck,
   Shield,
-  ArrowRight,
   UserPlus,
   AlertCircle,
   ArrowLeft
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export function Register() {
   const [step, setStep] = useState(1);
-  const [userType, setUserType] = useState<"cliente" | "farmacia" | "entregador" | "admin">("cliente");
+  const [userType, setUserType] = useState<"cliente" | "farmacia" | "entregador">("cliente");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
-  const { register } = useAuth();
+  const { register } = useAuth(); 
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     nome: "",
@@ -94,7 +95,7 @@ export function Register() {
     window.scrollTo(0, 0);
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
     if (!validateStep2()) return;
 
@@ -108,11 +109,23 @@ export function Register() {
         tipo: userType
       };
 
-      await register(registrationData);
-      setShowSuccess(true);
-      window.scrollTo(0, 0);
-    } catch (err: any) {
-      setError(err.message || "Ocorreu um erro ao realizar o cadastro. Tente novamente.");
+      const result = await register(registrationData);
+      
+      if (!result.success) {
+        setError(result.message);
+        return;
+      }
+      
+      // Se for farmácia, redireciona diretamente para a página da farmácia
+      if (userType === "farmacia") {
+        navigate("/farmacia/dashboard");
+      } else {
+        // Para outros tipos de usuário, mostra a tela de sucesso
+        setShowSuccess(true);
+        window.scrollTo(0, 0);
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Ocorreu um erro ao realizar o cadastro. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
@@ -234,26 +247,27 @@ export function Register() {
           </div>
         )}
 
-        {/* Tela de Sucesso */}
-        {showSuccess ? (
+        {/* Tela de Sucesso - Mostra apenas para cliente e entregador */}
+        {showSuccess && userType !== "farmacia" && (
           <div className="bg-white rounded-xl shadow-lg p-12 text-center">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Shield className="w-10 h-10 text-green-600" />
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">Registro Realizado!</h3>
-            <p className="text-gray-600 mb-8 max-w-sm mx-auto">
-              {userType === "admin"
-                ? "Sua solicitação de administrador foi enviada para análise da equipe TwalaCare."
-                : "Sua conta foi criada com sucesso. Bem-vindo à nossa plataforma!"}
+            <p className="text-gray-600 mb-8">
+              Sua conta foi criada com sucesso. Agora você pode fazer login e começar a usar o TwalaCare.
             </p>
             <button
-              onClick={() => window.location.href = "/login"}
+              onClick={() => navigate("/login")}
               className="w-full max-w-xs bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold"
             >
               Ir para o Login
-            </button>
+            </button> 
           </div>
-        ) : (
+        )}
+
+        {/* Formulário de Registro - Não mostra se for farmácia e já tiver sucesso */}
+        {(!showSuccess || (showSuccess && userType === "farmacia")) && (
           <div className="bg-white rounded-xl shadow-lg p-8">
             {/* Indicador de Passo */}
             <div className="flex items-center justify-between mb-8">
@@ -321,21 +335,6 @@ export function Register() {
                     <span className="font-semibold text-gray-900">Entregador</span>
                     <span className="text-xs text-gray-500 mt-1 text-center">
                       Fazer entregas
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setUserType("admin")}
-                    className={`flex flex-col items-center p-6 rounded-xl border-2 transition-all ${userType === "admin"
-                      ? "border-green-600 bg-green-50 shadow-sm"
-                      : "border-gray-200 hover:border-green-300 hover:bg-green-50/50"
-                      }`}
-                  >
-                    <Shield className="w-10 h-10 text-green-600 mb-3" />
-                    <span className="font-semibold text-gray-900">Admin</span>
-                    <span className="text-xs text-gray-500 mt-1 text-center">
-                      Gerenciar tudo
                     </span>
                   </button>
                 </div>
@@ -460,23 +459,14 @@ export function Register() {
                       Processando...
                     </>
                   ) : (
-                    userType === "admin" ? "Solicitar Registro" : "Criar Conta"
+                    "Registrar"
                   )}
                 </button>
               </form>
             )}
           </div>
         )}
-
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
-            Já tem uma conta?{" "}
-            <a href="/login" className="text-green-600 hover:text-green-700 font-semibold">
-              Iniciar Sessão
-            </a>
-          </p>
-        </div>
       </div>
     </div>
   );
-};
+}

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+ import { Link } from "react-router-dom";
 import { Pill, Truck, PhoneCall, Star, MapPin, Clock } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -7,8 +7,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+import { FloatingChat } from "../components/FloatingChat";
 
-// Mock data para fármacos mais vendidos
 
 // Dados do carrossel
 const carouselImages = [
@@ -48,6 +48,8 @@ const carouselImages = [
     alt: "Saúde e bem-estar",
   },
 ];
+
+// Mock data para fármacos mais vendidos
 
 const topMedicamentos = [
   {
@@ -505,7 +507,7 @@ export function Home() {
 
             {/* Card 3 */}
             <Link
-              to="/suporte"
+              to="/"
               className="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-green-500 hover:shadow-xl transition transform hover:-translate-y-1"
             >
               <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-4">
@@ -760,6 +762,8 @@ export function Home() {
           </Link>
         </div>
       </section>
+      <FloatingChat />
+
     </div>
   );
 }

@@ -1,290 +1,300 @@
-import { useState } from "react";
-import { DashboardLayout } from "../layout/DashboardLayout";
-import {
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Calendar,
-  Edit2,
-  Save,
-  X,
-} from "lucide-react";
+﻿import React, { useState, useEffect } from "react";
 
-interface ClienteData {
-  id: string;
+interface Cliente {
+  id?: string;
   nome: string;
   email: string;
   telefone: string;
-  provincia: string;
-  municipio: string;
   endereco: string;
-  dataRegistro: string;
+  cidade: string;
+  estado: string;
+  cep: string;
   dataNascimento: string;
+  fotoUrl?: string;
+  dataCadastro?: string;
+  status: 'ativo' | 'inativo';
 }
 
-export function ClientePerfil() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [cliente, setCliente] = useState<ClienteData>({
-    id: "1",
-    nome: "João Silva",
-    email: "joao@example.com",
-    telefone: "+244923456789",
-    provincia: "Luanda",
-    municipio: "Talatona",
-    endereco: "Rua da Paz, nº 123, Bairro Nova Vida",
-    dataRegistro: "2025-01-15",
-    dataNascimento: "1990-05-20",
+interface ClientePerfilProps {
+  usuarioLogado?: Cliente | null;
+  onSalvar?: (cliente: Cliente) => Promise<void> | void;
+  onExcluir?: (id: string) => Promise<void> | void;
+  onFechar?: () => void;
+}
+
+export function ClientePerfil({ 
+  usuarioLogado = null, 
+  onSalvar, 
+  onExcluir,
+  onFechar 
+}: ClientePerfilProps) {
+  const [cliente, setCliente] = useState<Cliente>({
+    nome: '',
+    email: '',
+    telefone: '',
+    endereco: '',
+    cidade: '',
+    estado: '',
+    cep: '',
+    dataNascimento: '',
+    status: 'ativo',
+    fotoUrl: ''
   });
+  
+  const [editando, setEditando] = useState(false);
+  const [salvando, setSalvando] = useState(false);
+  const [excluindo, setExcluindo] = useState(false);
 
-  const [formData, setFormData] = useState(cliente);
+  // Estados brasileiros
+  const estados = [
+    'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 
+    'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 
+    'SP', 'SE', 'TO'
+  ];
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
-  ) => {
+  useEffect(() => {
+    if (usuarioLogado) {
+      setCliente(usuarioLogado);
+    }
+  }, [usuarioLogado]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setCliente(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    setCliente(formData);
-    setIsEditing(false);
+  const handleSalvar = async () => {
+    if (!onSalvar) return;
+    setSalvando(true);
+    await onSalvar(cliente);
+    setEditando(false);
+    setSalvando(false);
   };
 
-  const handleCancel = () => {
-    setFormData(cliente);
-    setIsEditing(false);
+  const handleExcluir = async () => {
+    if (!cliente.id || !onExcluir) return;
+    setExcluindo(true);
+    await onExcluir(cliente.id);
+    setExcluindo(false);
+    if (onFechar) onFechar();
+  };
+
+  const handleCancelar = () => {
+    if (usuarioLogado) {
+      setCliente(usuarioLogado);
+      setEditando(false);
+    } else {
+      resetFormulario();
+    }
+  };
+
+  const resetFormulario = () => {
+    setCliente({
+      nome: '',
+      email: '',
+      telefone: '',
+      endereco: '',
+      cidade: '',
+      estado: '',
+      cep: '',
+      dataNascimento: '',
+      status: 'ativo',
+      fotoUrl: ''
+    });
   };
 
   return (
-    <DashboardLayout userType="cliente" userName={cliente.nome}>
-      <div className="p-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-4xl font-bold text-gray-900">Meu Perfil</h1>
-            {!isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="flex items-center space-x-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition"
-              >
-                <Edit2 className="w-5 h-5" />
-                <span>Editar Perfil</span>
-              </button>
-            )}
-          </div>
-
-          {/* Informações Pessoais */}
-          <div className="bg-white rounded-xl shadow-md p-8 mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-              Informações Pessoais
-            </h2>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Nome */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <User className="w-4 h-4" />
-                    <span>Nome Completo</span>
-                  </div>
-                </label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="nome"
-                    value={formData.nome}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                ) : (
-                  <p className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900">
-                    {cliente.nome}
-                  </p>
-                )}
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Mail className="w-4 h-4" />
-                    <span>Email</span>
-                  </div>
-                </label>
-                {isEditing ? (
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                ) : (
-                  <p className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900">
-                    {cliente.email}
-                  </p>
-                )}
-              </div>
-
-              {/* Telefone */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Phone className="w-4 h-4" />
-                    <span>Telefone</span>
-                  </div>
-                </label>
-                {isEditing ? (
-                  <input
-                    type="tel"
-                    name="telefone"
-                    value={formData.telefone}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                ) : (
-                  <p className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900">
-                    {cliente.telefone}
-                  </p>
-                )}
-              </div>
-
-              {/* Data de Nascimento */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Calendar className="w-4 h-4" />
-                    <span>Data de Nascimento</span>
-                  </div>
-                </label>
-                {isEditing ? (
-                  <input
-                    type="date"
-                    name="dataNascimento"
-                    value={formData.dataNascimento}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                ) : (
-                  <p className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900">
-                    {new Date(cliente.dataNascimento).toLocaleDateString(
-                      "pt-BR",
-                    )}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Endereço de Entrega */}
-          <div className="bg-white rounded-xl shadow-md p-8 mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center space-x-2">
-              <MapPin className="w-6 h-6" />
-              <span>Endereço de Entrega</span>
-            </h2>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Província */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Província
-                </label>
-                {isEditing ? (
-                  <select
-                    name="provincia"
-                    value={formData.provincia}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option>Luanda</option>
-                    <option>Benguela</option>
-                    <option>Huíla</option>
-                    <option>Huambo</option>
-                    <option>Cabinda</option>
-                    <option>Zaire</option>
-                  </select>
-                ) : (
-                  <p className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900">
-                    {cliente.provincia}
-                  </p>
-                )}
-              </div>
-
-              {/* Município */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Município
-                </label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="municipio"
-                    value={formData.municipio}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                ) : (
-                  <p className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900">
-                    {cliente.municipio}
-                  </p>
-                )}
-              </div>
-
-              {/* Endereço Completo */}
-              <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Endereço Completo
-                </label>
-                {isEditing ? (
-                  <textarea
-                    name="endereco"
-                    value={formData.endereco}
-                    onChange={handleInputChange}
-                    rows={3}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                ) : (
-                  <p className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900">
-                    {cliente.endereco}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Data de Registro */}
-          <div className="bg-linear-to-r from-green-50 to-blue-50 rounded-xl p-6 mb-8">
-            <p className="text-sm text-gray-600">
-              Membro desde{" "}
-              <strong>
-                {new Date(cliente.dataRegistro).toLocaleDateString("pt-BR")}
-              </strong>
-            </p>
-          </div>
-
-          {/* Botões de Ação */}
-          {isEditing && (
-            <div className="flex space-x-4">
-              <button
-                onClick={handleSave}
-                className="flex-1 flex items-center justify-center space-x-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition"
-              >
-                <Save className="w-5 h-5" />
-                <span>Salvar Alterações</span>
-              </button>
-              <button
-                onClick={handleCancel}
-                className="flex-1 flex items-center justify-center space-x-2 border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition"
-              >
-                <X className="w-5 h-5" />
-                <span>Cancelar</span>
-              </button>
-            </div>
+    <div className="max-w-2xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
+      <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-bold text-white">
+            {!usuarioLogado ? 'Novo Cliente' : 'Perfil do Cliente'}
+          </h2>
+          {onFechar && (
+            <button onClick={onFechar} className="text-white hover:text-gray-200">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           )}
         </div>
       </div>
-    </DashboardLayout>
+
+      <div className="p-6">
+        <div className="space-y-6">
+          {/* Foto */}
+          <div className="flex items-center space-x-4">
+            <img
+              src={cliente.fotoUrl || "https://via.placeholder.com/150"}
+              alt="Perfil"
+              className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+            />
+          </div>
+
+          {/* Formulário */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nome completo</label>
+              <input
+                type="text"
+                name="nome"
+                value={cliente.nome}
+                onChange={handleInputChange}
+                disabled={!editando && !!usuarioLogado}
+                className="w-full border rounded-lg px-4 py-2"
+                placeholder="Digite o nome completo"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={cliente.email}
+                onChange={handleInputChange}
+                disabled={!editando && !!usuarioLogado}
+                className="w-full border rounded-lg px-4 py-2"
+                placeholder="email@exemplo.com"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+              <input
+                type="text"
+                name="telefone"
+                value={cliente.telefone}
+                onChange={handleInputChange}
+                disabled={!editando && !!usuarioLogado}
+                className="w-full border rounded-lg px-4 py-2"
+                placeholder="(11) 99999-9999"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Data de Nascimento</label>
+              <input
+                type="date"
+                name="dataNascimento"
+                value={cliente.dataNascimento}
+                onChange={handleInputChange}
+                disabled={!editando && !!usuarioLogado}
+                className="w-full border rounded-lg px-4 py-2"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <select
+                name="status"
+                value={cliente.status}
+                onChange={handleInputChange}
+                disabled={!editando && !!usuarioLogado}
+                className="w-full border rounded-lg px-4 py-2"
+              >
+                <option value="ativo">Ativo</option>
+                <option value="inativo">Inativo</option>
+              </select>
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Endereço</label>
+              <input
+                type="text"
+                name="endereco"
+                value={cliente.endereco}
+                onChange={handleInputChange}
+                disabled={!editando && !!usuarioLogado}
+                className="w-full border rounded-lg px-4 py-2"
+                placeholder="Rua, número, complemento"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Cidade</label>
+              <input
+                type="text"
+                name="cidade"
+                value={cliente.cidade}
+                onChange={handleInputChange}
+                disabled={!editando && !!usuarioLogado}
+                className="w-full border rounded-lg px-4 py-2"
+                placeholder="Cidade"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+              <select
+                name="estado"
+                value={cliente.estado}
+                onChange={handleInputChange}
+                disabled={!editando && !!usuarioLogado}
+                className="w-full border rounded-lg px-4 py-2"
+              >
+                <option value="">Selecione</option>
+                {estados.map(uf => (
+                  <option key={uf} value={uf}>{uf}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">CEP</label>
+              <input
+                type="text"
+                name="cep"
+                value={cliente.cep}
+                onChange={handleInputChange}
+                disabled={!editando && !!usuarioLogado}
+                className="w-full border rounded-lg px-4 py-2"
+                placeholder="00000-000"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Botões */}
+      <div className="bg-gray-50 px-6 py-4 border-t">
+        <div className="flex justify-end gap-3">
+          {!usuarioLogado || editando ? (
+            <>
+              <button
+                onClick={handleCancelar}
+                disabled={salvando}
+                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSalvar}
+                disabled={salvando || !onSalvar}
+                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+              >
+                {salvando ? 'Salvando...' : 'Salvar'}
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={handleExcluir}
+                disabled={excluindo || !onExcluir}
+                className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+              >
+                {excluindo ? 'Excluindo...' : 'Excluir'}
+              </button>
+              <button
+                onClick={() => setEditando(true)}
+                className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+              >
+                Editar
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

@@ -6,7 +6,6 @@ import {
   Clock,
   MapPin,
   Phone,
-  User,
   CheckCircle,
   AlertCircle,
   RefreshCw,
@@ -25,6 +24,8 @@ import {
   Bell,
   XCircle
 } from "lucide-react";
+import { FloatingChat } from "../components/FloatingChat";
+
 
 // Tipos
 type DeliveryStatus = 'preparando' | 'coletado' | 'transito' | 'entregue' | 'atrasado' | 'cancelado';
@@ -66,7 +67,7 @@ interface Delivery {
 
 export function DeliveriesPage() {
   const [activeDelivery, setActiveDelivery] = useState<Delivery | null>(null);
-  const [deliveries, setDeliveries] = useState<Delivery[]>([
+  const [deliveries] = useState<Delivery[]>([
     {
       id: "1",
       orderNumber: "TW202400156",
@@ -983,6 +984,7 @@ export function DeliveriesPage() {
           </div>
         </div>
       </footer>
+       <FloatingChat />
     </div>
   );
 }

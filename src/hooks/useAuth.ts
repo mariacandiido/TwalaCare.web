@@ -1,12 +1,10 @@
 // hooks/useAuth.ts (VERSÃO MOCK - para desenvolvimento sem backend)
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { 
-  type BaseUser, 
   type UserType, 
-  type UserStatus,
   type Cliente,
   type Farmacia,
-  type Entregador,
+  type Entregador,  
   type Admin
 } from "../types";
 
@@ -38,11 +36,14 @@ interface RegisterResult {
   message: string;
   requiresVerification?: boolean;
   requiresApproval?: boolean;
-  data?: BaseUser;
+  data?: AppUser;
 }
 
+// Interface unificada para qualquer tipo de usuário
+export type AppUser = Cliente | Farmacia | Entregador | Admin;
+
 interface UseAuthReturn {
-  user: BaseUser | null;
+  user: AppUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (
@@ -54,17 +55,16 @@ interface UseAuthReturn {
   logout: () => Promise<void>;
   sendVerificationEmail: (email: string) => Promise<boolean>;
   verifyEmail: (token: string) => Promise<boolean>;
-  checkEmailExists: (email: string) => Promise<{ exists: boolean; user?: BaseUser }>;
+  checkEmailExists: (email: string) => Promise<{ exists: boolean; user?: AppUser }>;
   error: string | null;
   clearError: () => void;
-  updateUser: (userData: Partial<BaseUser>) => Promise<boolean>;
-  // Funções mock para desenvolvimento
-  mockLogin: (userData: BaseUser) => void;
+  updateUser: (userData: Partial<AppUser> & Record<string, any>) => Promise<boolean>;
+  mockLogin: (userData: AppUser) => void;
   mockLogout: () => void;
 }
 
 // Banco de dados mock em memória
-const mockUsers: BaseUser[] = [
+const mockUsers: AppUser[] = [
   {
     id: "1",
     nome: "João Silva",
@@ -73,6 +73,10 @@ const mockUsers: BaseUser[] = [
     dataRegistro: "2024-01-01T00:00:00Z",
     status: "ativo",
     tipo: "cliente",
+    dataNascimento: "1990-01-01",
+    provincia: "Luanda",
+    municipio: "Luanda",
+    endereco: "Rua Direita",
   },
   {
     id: "2",
@@ -82,24 +86,13 @@ const mockUsers: BaseUser[] = [
     dataRegistro: "2024-01-01T00:00:00Z",
     status: "ativo",
     tipo: "farmacia",
-  },
-  {
-    id: "3",
-    nome: "Carlos Entregador",
-    email: "entregador@exemplo.com",
-    telefone: "+244 900 000 003",
-    dataRegistro: "2024-01-01T00:00:00Z",
-    status: "ativo",
-    tipo: "entregador",
-  },
-  {
-    id: "4",
-    nome: "Admin Sistema",
-    email: "admin@exemplo.com",
-    telefone: "+244 900 000 004",
-    dataRegistro: "2024-01-01T00:00:00Z",
-    status: "ativo",
-    tipo: "admin",
+    nif: "5400000000",
+    provincia: "Luanda",
+    municipio: "Belas",
+    endereco: "Kilamba",
+    horarioAbertura: "08:00",
+    horarioFechamento: "22:00",
+    avaliacao: 4.5,
   },
 ];
 
@@ -107,26 +100,17 @@ const mockUsers: BaseUser[] = [
 const registeredEmails = new Set(mockUsers.map(user => user.email));
 
 export function useAuth(): UseAuthReturn {
-  const [user, setUser] = useState<BaseUser | null>(null);
+  const [user, setUser] = useState<AppUser | null>(() => {
+    try {
+      const userData = localStorage.getItem("user_data");
+      return userData ? JSON.parse(userData) : null;
+    } catch (error) {
+      console.error("Erro ao carregar usuário do localStorage:", error);
+      return null;
+    }
+  });
   const [isLoading, setIsLoading] = useState(false); // Iniciar como false já que não há backend
   const [error, setError] = useState<string | null>(null);
-
-  // Carregar usuário do localStorage ao iniciar
-  useEffect(() => {
-    const loadUser = () => {
-      try {
-        const userData = localStorage.getItem("user_data");
-        if (userData) {
-          const parsedUser = JSON.parse(userData);
-          setUser(parsedUser);
-        }
-      } catch (error) {
-        console.error("Erro ao carregar usuário do localStorage:", error);
-      }
-    };
-
-    loadUser();
-  }, []);
 
   // Função para limpar erros
   const clearError = () => setError(null);
@@ -212,16 +196,14 @@ export function useAuth(): UseAuthReturn {
         };
       }
 
-      // Criar novo usuário mock
-      const newUser: BaseUser = {
+      // Criar novo usuário mock com todos os dados fornecidos
+      const { password, confirmPassword, ...otherData } = userData;
+      const newUser: AppUser = {
+        ...otherData,
         id: "user_" + Date.now(),
-        nome: userData.nome,
-        email: userData.email,
-        telefone: userData.telefone,
         dataRegistro: new Date().toISOString(),
         status: userData.tipo === "cliente" ? "ativo" : "pendente-aprovacao",
-        tipo: userData.tipo,
-      };
+      } as AppUser;
 
       // Adicionar ao mock
       mockUsers.push(newUser);
@@ -330,7 +312,7 @@ export function useAuth(): UseAuthReturn {
   };
 
   // Atualizar dados do usuário MOCK
-  const updateUser = async (userData: Partial<BaseUser>): Promise<boolean> => {
+  const updateUser = async (userData: Partial<AppUser> & Record<string, any>): Promise<boolean> => {
     try {
       if (!user) {
         setError("Nenhum usuário autenticado");
@@ -346,11 +328,11 @@ export function useAuth(): UseAuthReturn {
       // Atualizar no mock
       const index = mockUsers.findIndex(u => u.id === user.id);
       if (index !== -1) {
-        mockUsers[index] = { ...mockUsers[index], ...userData };
+        mockUsers[index] = { ...mockUsers[index], ...userData } as AppUser;
       }
 
       // Atualizar estado
-      const updatedUser = { ...user, ...userData };
+      const updatedUser = { ...user, ...userData } as AppUser;
       setUser(updatedUser);
       localStorage.setItem("user_data", JSON.stringify(updatedUser));
 
@@ -390,7 +372,7 @@ export function useAuth(): UseAuthReturn {
   };
 
   // Funções auxiliares para desenvolvimento
-  const mockLogin = (userData: BaseUser) => {
+  const mockLogin = (userData: AppUser) => {
     localStorage.setItem("user_data", JSON.stringify(userData));
     setUser(userData);
     console.log("🔧 Login mock manual:", userData);

@@ -1,50 +1,109 @@
 import { DashboardLayout } from "../layout/DashboardLayout";
-import { Package, Clock, CheckCircle, TrendingUp, MapPin } from "lucide-react";
+import { Package, MapPin, Truck } from "lucide-react";
 
 const recentOrders = [
-  { id: "#TC12345", date: "23 Jan 2026", status: "Em trânsito", total: 5500, items: 3 },
-  { id: "#TC12344", date: "20 Jan 2026", status: "Entregue", total: 3200, items: 2 },
-  { id: "#TC12343", date: "18 Jan 2026", status: "Entregue", total: 2800, items: 1 },
+  {
+    id: "#TC12345",
+    date: "23 Jan 2026",
+    status: "Em trânsito",
+    total: 5500,
+    items: 3,
+  },
+  {
+    id: "#TC12344",
+    date: "20 Jan 2026",
+    status: "Entregue",
+    total: 3200,
+    items: 2,
+  },
+  {
+    id: "#TC12343",
+    date: "18 Jan 2026",
+    status: "Entregue",
+    total: 2800,
+    items: 1,
+  },
 ];
 
 export function ClienteDashboard() {
   return (
     <DashboardLayout userType="cliente" userName="João Silva">
       <div className="p-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">Dashboard</h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-8">Histórico</h1>
 
-        {/* Cards de estatísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <Package className="w-10 h-10 text-green-600" />
-            </div>
-            <p className="text-3xl font-bold text-gray-900">12</p>
-            <p className="text-sm text-gray-600">Total de Pedidos</p>
+        {/* Simulador de Mapa */}
+        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <MapPin className="w-6 h-6 text-green-600" />
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Rastreamento em Tempo Real
+            </h2>
           </div>
-
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <Clock className="w-10 h-10 text-orange-600" />
+          
+          <div className="relative bg-gray-100 rounded-lg h-80 overflow-hidden">
+            {/* Simulação de mapa com grid */}
+            <div className="absolute inset-0">
+              {/* Grid do mapa */}
+              <div className="w-full h-full grid grid-cols-8 grid-rows-6 gap-px bg-gray-300">
+                {Array.from({ length: 48 }).map((_, i) => (
+                  <div key={i} className="bg-gray-100 hover:bg-gray-200 transition-colors"></div>
+                ))}
+              </div>
+              
+              {/* Elementos visuais do mapa */}
+              <div className="absolute inset-0 pointer-events-none">
+                {/* Rotas principais */}
+                <div className="absolute top-1/3 left-0 w-full h-1 bg-blue-300 opacity-50"></div>
+                <div className="absolute top-2/3 left-0 w-full h-1 bg-blue-300 opacity-50"></div>
+                <div className="absolute left-1/3 top-0 w-1 h-full bg-blue-300 opacity-50"></div>
+                <div className="absolute left-2/3 top-0 w-1 h-full bg-blue-300 opacity-50"></div>
+                
+                {/* Marcadores de localização */}
+                <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2">
+                  <div className="relative">
+                    <MapPin className="w-8 h-8 text-green-600 fill-current" />
+                    <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold bg-white px-2 py-1 rounded shadow">
+                      Origem
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="absolute bottom-1/4 right-1/4 transform -translate-x-1/2 -translate-y-1/2">
+                  <div className="relative">
+                    <MapPin className="w-8 h-8 text-red-600 fill-current" />
+                    <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold bg-white px-2 py-1 rounded shadow">
+                      Destino
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Veículo em movimento */}
+                <div className="absolute top-2/4 left-2/4 transform -translate-x-1/2 -translate-y-1/2 animate-pulse">
+                  <div className="relative">
+                    <Truck className="w-10 h-10 text-blue-600" />
+                    <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold bg-white px-2 py-1 rounded shadow">
+                      Pedido #TC12345
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <p className="text-3xl font-bold text-gray-900">2</p>
-            <p className="text-sm text-gray-600">Pedidos Pendentes</p>
           </div>
-
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <CheckCircle className="w-10 h-10 text-blue-600" />
+          
+          {/* Informações da rota */}
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-sm text-gray-600">Distância</p>
+              <p className="text-lg font-semibold text-gray-900">12.5 km</p>
             </div>
-            <p className="text-3xl font-bold text-gray-900">10</p>
-            <p className="text-sm text-gray-600">Pedidos Entregues</p>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <TrendingUp className="w-10 h-10 text-purple-600" />
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-sm text-gray-600">Tempo estimado</p>
+              <p className="text-lg font-semibold text-gray-900">25 min</p>
             </div>
-            <p className="text-3xl font-bold text-gray-900">45.600 Kz</p>
-            <p className="text-sm text-gray-600">Total Gasto</p>
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-sm text-gray-600">Status</p>
+              <p className="text-lg font-semibold text-green-600">Em andamento</p>
+            </div>
           </div>
         </div>
 
@@ -52,32 +111,38 @@ export function ClienteDashboard() {
         <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-md p-6 mb-8 text-white">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-2xl font-semibold mb-2">Pedido em Trânsito</h2>
+              <h2 className="text-2xl font-semibold mb-2">
+                Pedido em Trânsito
+              </h2>
               <p className="text-green-50">#TC12345 - 3 itens</p>
             </div>
-            <MapPin className="w-12 h-12 text-white/80" />
+            <Truck className="w-12 h-12 text-white/80" />
           </div>
-          
+
           <div className="bg-white/20 rounded-lg p-4 mb-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm">Entregador a caminho</span>
               <span className="text-sm font-semibold">15 min</span>
             </div>
             <div className="w-full bg-white/30 rounded-full h-2">
-              <div className="bg-white rounded-full h-2" style={{ width: "60%" }}></div>
+              <div
+                className="bg-white rounded-full h-2"
+                style={{ width: "60%" }}
+              ></div>
             </div>
           </div>
-
-          <button className="w-full bg-white text-green-600 py-3 rounded-lg hover:bg-green-50 transition font-semibold">
-            Rastrear em Tempo Real
-          </button>
         </div>
 
         {/* Pedidos recentes */}
         <div className="bg-white rounded-xl shadow-md p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold text-gray-900">Pedidos Recentes</h2>
-            <a href="/cliente/pedidos" className="text-green-600 hover:text-green-700 font-semibold">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Pedidos Recentes
+            </h2>
+            <a
+              href="/cliente/pedidos"
+              className="text-green-600 hover:text-green-700 font-semibold"
+            >
               Ver todos →
             </a>
           </div>
@@ -94,12 +159,16 @@ export function ClienteDashboard() {
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900">{order.id}</p>
-                    <p className="text-sm text-gray-600">{order.date} • {order.items} itens</p>
+                    <p className="text-sm text-gray-600">
+                      {order.date} • {order.items} itens
+                    </p>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <p className="font-semibold text-gray-900">{order.total.toLocaleString()} Kz</p>
+                  <p className="font-semibold text-gray-900">
+                    {order.total.toLocaleString()} Kz
+                  </p>
                   <span
                     className={`text-xs px-2 py-1 rounded ${
                       order.status === "Entregue"

@@ -1,7 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, Filter, Star, ShoppingCart } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useCartStore } from "../store/cartStore";
+import { useAuth } from "../hooks/useAuth";
+import { FloatingChat } from "../components/FloatingChat";
+
 
 // Mock data
 const categorias = ["Todos", "Analgésicos", "Antibióticos", "Vitaminas", "Antialérgicos", "Digestivos"];
@@ -91,6 +95,8 @@ const medicamentos = [
 
 export function Farmacos() {
   const { addItem } = useCartStore();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategoria, setSelectedCategoria] = useState("Todos");
   const [selectedProvincia, setSelectedProvincia] = useState("Todas");
@@ -108,6 +114,10 @@ export function Farmacos() {
   });
 
   const handleAddToCart = (med: typeof medicamentos[0]) => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
     addItem({
       id: med.id,
       name: med.name,
@@ -291,6 +301,7 @@ export function Farmacos() {
           </div>
         )}
       </div>
+       <FloatingChat />
     </div>
   );
 }

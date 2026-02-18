@@ -1,4 +1,6 @@
 import { CheckCircle, Users, Heart, Shield } from "lucide-react";
+import { FloatingChat } from "../components/FloatingChat";
+
 
 export function SobreNos() {
   return (
@@ -194,6 +196,7 @@ export function SobreNos() {
           </div>
         </div>
       </section>
+       <FloatingChat />
     </div>
   );
 }
