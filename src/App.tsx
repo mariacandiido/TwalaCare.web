@@ -1,7 +1,16 @@
-import { RouterProvider } from 'react-router';
-import { router } from './routes';
+import { RouterProvider } from "react-router-dom";
+import { router } from "./routes";
+import { AuthProvider } from "./hooks/useAuth";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { DomTranslator } from "./i18n/DomTranslator";
 
 export default function App() {
-  return <RouterProvider router={router} />;
-  
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <RouterProvider router={router} />
+        <DomTranslator />
+      </AuthProvider>
+    </ThemeProvider>
+  );
 }

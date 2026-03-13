@@ -10,6 +10,9 @@ export interface CartItem {
   requiresPrescription: boolean;
 }
 
+/** Taxa de entrega fixa em Kz */
+export const DELIVERY_FEE = 500;
+
 interface CartState {
   items: CartItem[];
   addItem: (item: CartItem) => void;
@@ -17,6 +20,8 @@ interface CartState {
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   getTotal: () => number;
+  /** Total de unidades (soma das quantidades) — para o badge do carrinho */
+  getTotalQuantity: () => number;
 }
 
 export const useCartStore = create<CartState>((set, get) => ({
@@ -49,5 +54,10 @@ export const useCartStore = create<CartState>((set, get) => ({
   getTotal: () => {
     const items = get().items;
     return items.reduce((total, item) => total + (item.price * item.quantity), 0);
+  },
+
+  getTotalQuantity: () => {
+    const items = get().items;
+    return items.reduce((sum, item) => sum + item.quantity, 0);
   },
 }));

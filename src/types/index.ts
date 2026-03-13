@@ -1,5 +1,7 @@
-// Tipos de Usuário
-export type UserType = "cliente" | "farmacia" | "entregador" | "admin";
+// Tipos de Usuário existentes no sistema.
+// Cada valor representa um perfil com permissões e páginas diferentes.
+// "cliente" foi adicionado para suportar a área do cliente.
+export type UserType = "farmacia" | "entregador" | "admin" | "cliente";
 
 // Status de Pedidos
 export type OrderStatus =
@@ -38,15 +40,6 @@ export interface BaseUser {
   tipo: UserType;
 }
 
-// Cliente
-export interface Cliente extends BaseUser {
-  tipo: "cliente";
-  dataNascimento: string;
-  provincia: string;
-  municipio: string;
-  endereco: string;
-}
-
 // Farmácia
 export interface Farmacia extends BaseUser {
   tipo: "farmacia";
@@ -78,6 +71,17 @@ export interface Admin extends BaseUser {
   cargo: string;
   departamento: string;
   permissoes: string[];
+}
+
+// Interface do Cliente (utilizador que compra medicamentos na plataforma).
+// Herda os campos base (id, nome, email, telefone, etc.) de BaseUser.
+// Os campos opcionais (?) podem não estar preenchidos no registo inicial.
+export interface Cliente extends BaseUser {
+  tipo: "cliente";
+  dataNascimento?: string; // data de nascimento, usada para validações futuras
+  provincia?: string;      // província de residência
+  municipio?: string;      // município de residência
+  endereco?: string;       // morada completa para entregas
 }
 
 // Medicamento

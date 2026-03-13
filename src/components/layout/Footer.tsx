@@ -1,159 +1,192 @@
 import { Link } from "react-router-dom";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Facebook,
-  Instagram,
-  Twitter,
-} from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
+
+const GREEN = "#2c5530";
+const GOLD  = "#c7a252";
 
 export function Footer() {
   return (
-    <footer className="bg-gray-100 border-t border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer style={{ backgroundColor: GREEN }}>
+      {/* Linha dourada de separação no topo */}
+      <div style={{ height: 3, background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }} />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+
           {/* Sobre TwalaCare */}
-          <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">T</span>
+          <div className="md:col-span-1">
+            <div className="flex items-center gap-3 mb-4">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md"
+                style={{ background: `linear-gradient(135deg, ${GOLD}, #a88235)`, border: "1px solid rgba(255,255,255,0.2)" }}
+              >
+                <span style={{ color: GREEN, fontFamily: "'Poppins', sans-serif", fontWeight: 700, fontSize: 18 }}>T</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">TwalaCare</span>
+              <div>
+                <span style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 600, color: "#ffffff", fontSize: 18 }}>
+                  Twala<span style={{ color: GOLD }}>CARE</span>
+                </span>
+                <p style={{ fontFamily: "'Roboto', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.5)", letterSpacing: "0.5px" }}>
+                  Farmácias Online · Angola
+                </p>
+              </div>
             </div>
-            <p className="text-gray-600 text-sm">
+            <p style={{ fontFamily: "'Roboto', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.7)", lineHeight: 1.7 }}>
               Sua farmácia online de confiança em Angola. Medicamentos de
               qualidade, entrega rápida e atendimento profissional.
             </p>
+            {/* Redes Sociais */}
+            <div className="flex items-center gap-3 mt-5">
+              {[Facebook, Instagram, Twitter].map((Icon, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300"
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    color: "rgba(255,255,255,0.8)",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = GOLD;
+                    (e.currentTarget as HTMLElement).style.borderColor = GOLD;
+                    (e.currentTarget as HTMLElement).style.color = GREEN;
+                    (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.08)";
+                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.15)";
+                    (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.8)";
+                    (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+                  }}
+                >
+                  <Icon className="w-4 h-4" />
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* Links Rápidos */}
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Links Rápidos</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  to="/farmacias"
-                  className="text-gray-600 hover:text-green-600 transition text-sm"
-                >
-                  Farmácias
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/farmacos"
-                  className="text-gray-600 hover:text-green-600 transition text-sm"
-                >
-                  Fármacos
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/sobre-nos"
-                  className="text-gray-600 hover:text-green-600 transition text-sm"
-                >
-                  Sobre Nós
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/faq"
-                  className="text-gray-600 hover:text-green-600 transition text-sm"
-                >
-                  FAQ
-                </Link>
-              </li>
+            <h3
+              className="mb-4 pb-2"
+              style={{
+                fontFamily: "'Poppins', sans-serif",
+                fontWeight: 600,
+                color: "#ffffff",
+                fontSize: 15,
+                borderBottom: `1px solid rgba(199,162,82,0.3)`,
+              }}
+            >
+              Links Rápidos
+            </h3>
+            <ul className="space-y-2.5">
+              {[
+                { to: "/farmacias", label: "Farmácias" },
+                { to: "/farmacos",  label: "Fármacos" },
+                { to: "/sobre-nos", label: "Sobre Nós" },
+                { to: "/faq",       label: "FAQ" },
+              ].map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    style={{ fontFamily: "'Roboto', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.65)", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = GOLD; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.65)"; }}
+                  >
+                    <span style={{ color: GOLD, fontSize: 10 }}>▸</span>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Suporte */}
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Suporte</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  to="/termos"
-                  className="text-gray-600 hover:text-green-600 transition text-sm"
-                >
-                  Termos de Uso
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/privacidade"
-                  className="text-gray-600 hover:text-green-600 transition text-sm"
-                >
-                  Política de Privacidade
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/ajuda"
-                  className="text-gray-600 hover:text-green-600 transition text-sm"
-                >
-                  Central de Ajuda
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/contato"
-                  className="text-gray-600 hover:text-green-600 transition text-sm"
-                >
-                  Contacte-nos
-                </Link>
-              </li>
+            <h3
+              className="mb-4 pb-2"
+              style={{
+                fontFamily: "'Poppins', sans-serif",
+                fontWeight: 600,
+                color: "#ffffff",
+                fontSize: 15,
+                borderBottom: `1px solid rgba(199,162,82,0.3)`,
+              }}
+            >
+              Suporte
+            </h3>
+            <ul className="space-y-2.5">
+              {[
+                { to: "/termos",     label: "Termos de Uso" },
+                { to: "/privacidade",label: "Política de Privacidade" },
+                { to: "/ajuda",      label: "Central de Ajuda" },
+                { to: "/contato",    label: "Contacte-nos" },
+              ].map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    style={{ fontFamily: "'Roboto', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.65)", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = GOLD; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.65)"; }}
+                  >
+                    <span style={{ color: GOLD, fontSize: 10 }}>▸</span>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Contacto */}
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Contacto</h3>
-            <ul className="space-y-3">
-              <li className="flex items-start space-x-3">
-                <Mail className="w-5 h-5 text-green-600 flex-shrink-0" />
-                <span className="text-gray-600 text-sm">
-                  suporte@twalacare.ao
-                </span>
-              </li>
-              <li className="flex items-start space-x-3">
-                <Phone className="w-5 h-5 text-green-600 flex-shrink-0" />
-                <span className="text-gray-600 text-sm">+244 900 000 000</span>
-              </li>
-              <li className="flex items-start space-x-3">
-                <MapPin className="w-5 h-5 text-green-600 flex-shrink-0" />
-                <span className="text-gray-600 text-sm">Luanda, Angola</span>
-              </li>
+            <h3
+              className="mb-4 pb-2"
+              style={{
+                fontFamily: "'Poppins', sans-serif",
+                fontWeight: 600,
+                color: "#ffffff",
+                fontSize: 15,
+                borderBottom: `1px solid rgba(199,162,82,0.3)`,
+              }}
+            >
+              Contacto
+            </h3>
+            <ul className="space-y-3.5">
+              {[
+                { icon: Mail,   text: "suporte@twalacare.ao" },
+                { icon: Phone,  text: "+244 900 000 000" },
+                { icon: MapPin, text: "Luanda, Angola" },
+              ].map(({ icon: Icon, text }) => (
+                <li key={text} className="flex items-start gap-3">
+                  <div
+                    className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+                    style={{ backgroundColor: "rgba(199,162,82,0.15)" }}
+                  >
+                    <Icon className="w-3.5 h-3.5" style={{ color: GOLD }} />
+                  </div>
+                  <span style={{ fontFamily: "'Roboto', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.7)", lineHeight: 1.5 }}>
+                    {text}
+                  </span>
+                </li>
+              ))}
             </ul>
-
-            {/* Redes Sociais */}
-            <div className="flex items-center space-x-3 mt-4">
-              <a
-                href="#"
-                className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center hover:bg-green-700 transition"
-              >
-                <Facebook className="w-4 h-4" />
-              </a>
-              <a
-                href="#"
-                className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center hover:bg-green-700 transition"
-              >
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a
-                href="#"
-                className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center hover:bg-green-700 transition"
-              >
-                <Twitter className="w-4 h-4" />
-              </a>
-            </div>
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="mt-8 pt-8 border-t border-gray-300 text-center">
-          <p className="text-gray-600 text-sm">
-            © 2026 TwalaCare. Todos os direitos reservados.
+        <div
+          className="mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
+        >
+          <p style={{ fontFamily: "'Roboto', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
+            © 2026 TwalaCARE. Todos os direitos reservados.
           </p>
+          <div className="flex items-center gap-2">
+            <span className="twala-seal" style={{ fontSize: 10 }}>
+              Farmácia de Confiança · Angola
+            </span>
+          </div>
         </div>
       </div>
     </footer>

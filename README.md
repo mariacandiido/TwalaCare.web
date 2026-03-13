@@ -84,6 +84,8 @@ npm run build
 
 O projeto estará disponível em `http://localhost:5173`
 
+**Painel Admin:** Para ver farmácias e entregadores criados no site (registo), aceda ao admin **na mesma aplicação**: `http://localhost:5173/admin`. Se usar `npm run dev:admin` (porta 5174), os dados de registo não aparecem porque o localStorage é diferente por origem.
+
 ## 📁 Estrutura do Projeto
 
 ```

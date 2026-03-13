@@ -5,7 +5,7 @@ export interface Usuario {
   id: string;
   nome: string;
   email: string;
-  tipo: "cliente" | "farmacia" | "entregador" | "admin";
+  tipo: "farmacia" | "entregador" | "admin";
   telefone: string;
   dataRegistro: string;
   status: "ativo" | "inativo";
@@ -23,15 +23,6 @@ interface UsuariosStore {
 }
 
 const usuariosIniciais: Usuario[] = [
-  {
-    id: "1",
-    nome: "João Silva",
-    email: "joao@example.com",
-    tipo: "cliente",
-    telefone: "+244923456789",
-    dataRegistro: "2025-01-15",
-    status: "ativo",
-  },
   {
     id: "2",
     nome: "Farmácia Central",

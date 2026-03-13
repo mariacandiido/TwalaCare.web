@@ -31,7 +31,6 @@ export const PROVINCIAS = [
 
 // Constantes de Tipos de Usuário
 export const USER_TYPES = [
-  { value: "cliente", label: "Cliente", icon: "User" },
   { value: "farmacia", label: "Farmácia", icon: "Building2" },
   { value: "entregador", label: "Entregador", icon: "Truck" },
   { value: "admin", label: "Administrador", icon: "Shield" },

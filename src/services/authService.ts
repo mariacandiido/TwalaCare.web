@@ -14,15 +14,6 @@ interface LoginResponse {
 // Mock users
 const mockUsers = [
   {
-    id: "1",
-    nome: "João Silva",
-    email: "joao@example.com",
-    telefone: "+244923456789",
-    dataRegistro: "2025-01-15",
-    status: "ativo" as const,
-    tipo: "cliente" as const,
-  },
-  {
     id: "2",
     nome: "Farmácia Central",
     email: "central@pharmacy.com",
